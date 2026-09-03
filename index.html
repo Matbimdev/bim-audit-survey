@@ -339,8 +339,7 @@ footer.page { color: var(--muted); font-size: 13px; padding: 8px 0 0; border-top
             { id: "pyrevit", es: "pyRevit", en: "pyRevit" },
             { id: "addins_comerciales", es: "Add-ins comerciales (Ideate, Diroots u otros)", en: "Commercial add-ins (Ideate, Diroots or others)" },
             { id: "navisworks", es: "Navisworks", en: "Navisworks" },
-            { id: "solibri", es: "Solibri", en: "Solibri" },
-            { id: "nada_sistematico", es: "Nada sistemático", en: "Nothing systematic" }
+            { id: "solibri", es: "Solibri", en: "Solibri" }
           ] }
       ]
     },
@@ -375,7 +374,7 @@ footer.page { color: var(--muted); font-size: 13px; padding: 8px 0 0; border-top
             { id: "no_de_memoria", es: "No, las llevo de memoria", en: "No, I keep them in my head" }
           ] },
         { id: "reglas_cambian", type: "single", required: true,
-          q: { es: "¿Cambian de un proyecto a otro?", en: "Do they change from project to project?" },
+          q: { es: "¿Las reglas cambian de un proyecto a otro?", en: "Do the rules change from project to project?" },
           options: [
             { id: "siempre", es: "Siempre", en: "Always" },
             { id: "a_veces", es: "A veces", en: "Sometimes" },
@@ -389,9 +388,8 @@ footer.page { color: var(--muted); font-size: 13px; padding: 8px 0 0; border-top
       id: "herramienta",
       title: { es: "La herramienta", en: "The tool" },
       fields: [
-        { id: "capacidades_deseadas", type: "limit", limit: 4, required: true, shuffle: true,
+        { id: "capacidades_deseadas", type: "limit", limit: 7, required: true, shuffle: true,
           q: { es: "Si Revit tuviera un botón de IA al que puedes preguntarle en lenguaje natural, ¿qué te gustaría que resolviera?", en: "If Revit had an AI button you could ask in plain language, what would you want it to solve?" },
-          hint: { es: "Elige hasta 4.", en: "Choose up to 4." },
           otherId: "otra",
           other: { es: "Otra", en: "Other" },
           otherPlaceholder: { es: "¿Cuál?", en: "Which one?" },
@@ -410,9 +408,8 @@ footer.page { color: var(--muted); font-size: 13px; padding: 8px 0 0; border-top
             { id: "info_proyecto", es: "Consultar la información general del proyecto: unidades, fases, ubicación", en: "Query general project information: units, phases, location" },
             { id: "exportar", es: "Exportar el resultado de la auditoría a Excel o PDF", en: "Export the audit result to Excel or PDF" }
           ] },
-        { id: "formato_resultado", type: "multi", required: true,
+        { id: "formato_resultado", type: "single", required: true,
           q: { es: "¿Cómo querrías recibir el resultado?", en: "How would you want to receive the result?" },
-          hint: { es: "Marca todas las que apliquen.", en: "Select all that apply." },
           options: [
             { id: "excel_csv", es: "Reporte en Excel o CSV", en: "Excel or CSV report" },
             { id: "pdf", es: "PDF para compartir", en: "PDF to share" },
@@ -422,10 +419,10 @@ footer.page { color: var(--muted); font-size: 13px; padding: 8px 0 0; border-top
         { id: "permiso_modificar", type: "single", required: true,
           q: { es: "Si esa IA pudiera además modificar el modelo, ¿la dejarías?", en: "If that AI could also modify the model, would you let it?" },
           options: [
-            { id: "solo_lectura", es: "No, solo que lea y reporte", en: "No, read and report only" },
-            { id: "si_confirmando", es: "Sí, pero confirmando cada cambio", en: "Yes, but confirming every change" },
-            { id: "si_por_lotes", es: "Sí, en lotes que yo revise después", en: "Yes, in batches I review afterwards" },
-            { id: "si_sin_supervision", es: "Sí, sin supervisión", en: "Yes, without supervision" }
+            { id: "solo_lectura", es: "Solo lectura. Lee y reporta, no toca el modelo.", en: "Read only. Reads and reports, never touches the model." },
+            { id: "manual", es: "Manual. Me pregunta antes de cada cambio.", en: "Manual. Asks me before every change." },
+            { id: "aceptar_ediciones", es: "Aceptar ediciones. Aplica los cambios y yo los reviso después.", en: "Accept edits. Applies changes and I review them afterwards." },
+            { id: "automatico", es: "Automático. Actúa sin preguntar.", en: "Automatic. Acts without asking." }
           ] }
       ]
     },
@@ -433,15 +430,12 @@ footer.page { color: var(--muted); font-size: 13px; padding: 8px 0 0; border-top
       id: "barreras",
       title: { es: "Barreras", en: "Barriers" },
       fields: [
-        { id: "preocupaciones", type: "multi", required: true,
+        { id: "preocupaciones", type: "single", required: true,
           q: { es: "¿Qué te preocuparía de conectar una IA a tus modelos?", en: "What would worry you about connecting an AI to your models?" },
-          hint: { es: "Marca todas las que apliquen.", en: "Select all that apply." },
           options: [
             { id: "confidencialidad", es: "Confidencialidad del modelo", en: "Model confidentiality" },
             { id: "error_no_detectado", es: "Que se equivoque y no me dé cuenta", en: "That it gets something wrong and I don't notice" },
             { id: "costo", es: "Costo", en: "Cost" },
-            { id: "modificacion_involuntaria", es: "Que modifique algo sin querer", en: "That it changes something by accident" },
-            { id: "politicas_empresa", es: "Políticas de mi empresa", en: "My company's policies" },
             { id: "ninguna", es: "Ninguna en particular", en: "None in particular" }
           ] },
         { id: "instalacion", type: "single", required: true,
@@ -460,7 +454,7 @@ footer.page { color: var(--muted); font-size: 13px; padding: 8px 0 0; border-top
       note: { es: "Este bloque entero es opcional. Puedes enviar sin responderlo.", en: "This whole block is optional. You can submit without answering it." },
       fields: [
         { id: "tiempo_liberado", type: "textarea", required: false,
-          q: { es: "Si esa revisión se resolviera en minutos, ¿en qué usarías el tiempo liberado?", en: "If that review took minutes instead, what would you do with the time freed up?" } },
+          q: { es: "Si esa revisión se resolviera en minutos, ¿a qué proceso BIM dedicarías ese tiempo?", en: "If that review took minutes instead, which BIM process would you spend that time on?" } },
         { id: "experiencia_ia", type: "textarea", required: false,
           q: { es: "¿Has probado alguna herramienta de IA sobre tus modelos? ¿Qué pasó?", en: "Have you tried any AI tool on your models? What happened?" } }
       ]
@@ -478,11 +472,12 @@ footer.page { color: var(--muted); font-size: 13px; padding: 8px 0 0; border-top
     time:      { es: "Unos 10 minutos", en: "About 10 minutes" },
     anon:      { es: "Se cita de forma anónima", en: "Quoted anonymously" },
     optional:  { es: "opcional", en: "optional" },
-    consent:   { es: "Acepto que mis respuestas se usen en un trabajo académico del Diplomado AECODE. Entiendo que mis datos personales no se publicarán y que las respuestas se citarán de forma anónima, indicando solo el rol y el tipo de empresa. Mi correo se usa únicamente para una posible repregunta.",
-                 en: "I agree that my answers may be used in an academic paper for the AECODE diploma programme. I understand that my personal data will not be published and that answers will be quoted anonymously, indicating only role and company type. My email is used only for a possible follow-up question." },
+    consent:   { es: "Acepto que mis respuestas se usen en un trabajo académico del Diplomado de IA en Ingeniería y Construcción. Entiendo que mis datos personales no se publicarán y que las respuestas se citarán de forma anónima, indicando solo el rol y el tipo de empresa. Mi correo se usa únicamente para una posible repregunta.",
+                 en: "I agree that my answers may be used in an academic paper for the AI in Engineering and Construction diploma programme. I understand that my personal data will not be published and that answers will be quoted anonymously, indicating only role and company type. My email is used only for a possible follow-up question." },
     submit:    { es: "Enviar respuestas", en: "Submit answers" },
     sending:   { es: "Enviando…", en: "Sending…" },
     counter:   { es: "{n} de {max} seleccionadas", en: "{n} of {max} selected" },
+    chooseUpTo: { es: "Elige hasta {max}.", en: "Choose up to {max}." },
     durPlaceholder: { es: "Cantidad", en: "Amount" },
     errRequired: { es: "Esta pregunta es obligatoria.", en: "This question is required." },
     errPick:     { es: "Elige al menos una opción.", en: "Pick at least one option." },
@@ -505,8 +500,8 @@ footer.page { color: var(--muted); font-size: 13px; padding: 8px 0 0; border-top
     doneBody:    { es: "Tu respuesta quedó guardada y ya cuenta para el estudio. No hace falta que hagas nada más.",
                    en: "Your answer has been saved and already counts towards the study. There is nothing else you need to do." },
     doneContact: { es: "Si quieres corregir algo, escríbeme a " + CONTACT + ".", en: "If you want to correct anything, email me at " + CONTACT + "." },
-    foot:        { es: "Instrumento de investigación del Diplomado AECODE, IA en Ingeniería y Construcción. Los datos personales no se publican.",
-                   en: "Research instrument for the AECODE diploma programme, AI in Engineering and Construction. Personal data is not published." },
+    foot:        { es: "Instrumento de investigación del Diplomado de IA en Ingeniería y Construcción. Los datos personales no se publican.",
+                   en: "Research instrument for the AI in Engineering and Construction diploma programme. Personal data is not published." },
     mailSubject: { es: "Respuesta a la encuesta de auditoría BIM", en: "BIM audit survey response" }
   };
 
@@ -583,7 +578,14 @@ footer.page { color: var(--muted); font-size: 13px; padding: 8px 0 0; border-top
       var flag = el("span", "opt-flag", q);
       bind(flag, function () { return " (" + T.optional[lang] + ")"; });
     }
-    if (field.hint) bind(el("span", "hint", wrap), field.hint);
+    if (field.type === "limit") {
+      // La pista sale del propio tope, para que no pueda descuadrarse con field.limit.
+      bind(el("span", "hint", wrap), function () {
+        return T.chooseUpTo[lang].replace("{max}", field.limit);
+      });
+    } else if (field.hint) {
+      bind(el("span", "hint", wrap), field.hint);
+    }
 
     var err = el("p", "err", wrap);
     var d = { field: field, wrap: wrap, err: err };

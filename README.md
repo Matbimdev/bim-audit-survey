@@ -5,8 +5,8 @@ Revit antes de una reunión de coordinación o de una entrega.
 
 **Responder aquí:** https://matbimdev.github.io/bim-audit-survey/
 
-Es el instrumento de evidencia directa del Hito 1 del Trabajo General del Diplomado AECODE,
-"IA en Ingeniería y Construcción". Alimenta las secciones de usuario y de evidencia del informe
+Es el instrumento de evidencia directa del Hito 1 del Trabajo General del Diplomado de IA
+en Ingeniería y Construcción. Alimenta las secciones de usuario y de evidencia del informe
 de planteamiento del proyecto BIM Agent.
 
 Tiempo de respuesta: unos 10 minutos. Bilingüe, español e inglés, con selector arriba.
