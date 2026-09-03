@@ -1,0 +1,1065 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auditoría BIM: instrumento de investigación</title>
+<meta name="description" content="Instrumento de investigación académica sobre auditoría de modelos de Revit antes de reuniones de coordinación y entregas.">
+<meta name="robots" content="noindex">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f6f6f3;
+  --surface: #ffffff;
+  --surface-2: #fbfbf9;
+  --text: #1b1c1a;
+  --muted: #6a6c66;
+  --border: #dcdcd4;
+  --border-strong: #b9bab1;
+  --accent: #24506b;
+  --accent-soft: #eaf1f6;
+  --error: #9d2b2b;
+  --error-soft: #fbeeee;
+  --ok: #2c6a45;
+  --shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #141619;
+    --surface: #1b1e22;
+    --surface-2: #202429;
+    --text: #e9e9e4;
+    --muted: #9b9d96;
+    --border: #2f343a;
+    --border-strong: #454b53;
+    --accent: #86b6d1;
+    --accent-soft: #1e2a33;
+    --error: #e08585;
+    --error-soft: #2c1e1e;
+    --ok: #7cc39b;
+    --shadow: none;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+.progress-rail {
+  position: sticky; top: 0; left: 0; right: 0; z-index: 20;
+  height: 3px; background: var(--border);
+}
+.progress-fill {
+  height: 100%; width: 0%; background: var(--accent);
+  transition: width .25s ease;
+}
+.wrap { max-width: 660px; margin: 0 auto; padding: 0 20px 72px; }
+
+header.page { padding: 28px 0 22px; }
+.langbar { display: flex; justify-content: flex-end; padding-top: 14px; }
+.langbar .group {
+  display: inline-flex; border: 1px solid var(--border-strong);
+  border-radius: 8px; overflow: hidden; background: var(--surface);
+}
+.langbar button {
+  font: inherit; font-size: 14px; padding: 8px 14px; min-height: 40px;
+  border: 0; background: transparent; color: var(--muted); cursor: pointer;
+}
+.langbar button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+@media (prefers-color-scheme: dark) { .langbar button[aria-pressed="true"] { color: #10161b; } }
+
+h1 { font-size: 27px; line-height: 1.25; margin: 18px 0 10px; letter-spacing: -.01em; }
+.lede { color: var(--muted); margin: 0 0 16px; font-size: 16px; }
+.meta-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill {
+  display: inline-block; font-size: 13px; color: var(--muted);
+  border: 1px solid var(--border); background: var(--surface);
+  border-radius: 999px; padding: 5px 12px;
+}
+
+.notice { border-radius: 10px; padding: 14px 16px; margin: 0 0 22px; font-size: 15px; }
+.notice.error { background: var(--error-soft); border: 1px solid var(--error); color: var(--text); }
+.notice h3 { margin: 0 0 6px; font-size: 15px; color: var(--error); }
+.notice p { margin: 0; }
+
+fieldset.block {
+  border: 1px solid var(--border); border-radius: 12px;
+  background: var(--surface); box-shadow: var(--shadow);
+  margin: 0 0 20px; padding: 20px;
+}
+fieldset.block > legend { padding: 0; display: block; width: 100%; }
+.block-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+.block-num {
+  flex: none; font-size: 12px; font-weight: 700; letter-spacing: .06em;
+  color: var(--accent); background: var(--accent-soft);
+  border-radius: 6px; padding: 3px 8px;
+}
+.block-title { font-size: 18px; font-weight: 650; }
+.block-note { color: var(--muted); font-size: 14px; margin: 0 0 4px; }
+
+.field { padding: 16px 0; border-top: 1px solid var(--border); }
+.field:first-of-type { border-top: 0; padding-top: 10px; }
+.q { display: block; font-weight: 600; margin-bottom: 3px; }
+.hint { display: block; color: var(--muted); font-size: 14px; margin-bottom: 10px; }
+.opt-flag { font-weight: 400; color: var(--muted); font-size: 14px; }
+
+input[type=text], input[type=email], input[type=number], textarea, select {
+  font: inherit; width: 100%; padding: 11px 12px; min-height: 46px;
+  color: var(--text); background: var(--surface-2);
+  border: 1px solid var(--border-strong); border-radius: 8px;
+}
+textarea { min-height: 108px; resize: vertical; line-height: 1.5; }
+input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible, label.opt:focus-within {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+input[aria-invalid="true"], textarea[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--error); }
+
+.opts { display: grid; gap: 8px; }
+label.opt {
+  display: flex; align-items: flex-start; gap: 11px;
+  min-height: 46px; padding: 11px 13px;
+  border: 1px solid var(--border-strong); border-radius: 9px;
+  background: var(--surface-2); cursor: pointer; line-height: 1.45;
+}
+label.opt input { flex: none; margin: 3px 0 0; width: 18px; height: 18px; accent-color: var(--accent); }
+label.opt:hover { border-color: var(--accent); }
+label.opt.checked { border-color: var(--accent); background: var(--accent-soft); }
+label.opt.locked { opacity: .42; cursor: not-allowed; }
+label.opt.locked:hover { border-color: var(--border-strong); }
+.opts[aria-invalid="true"] { outline: 1px solid var(--error); outline-offset: 6px; border-radius: 4px; }
+
+.counter { font-size: 14px; color: var(--muted); margin: 10px 0 0; }
+.counter.full { color: var(--accent); font-weight: 600; }
+.otra-wrap { margin-top: 8px; }
+
+.duo { display: flex; gap: 10px; }
+.duo input[type=number] { flex: 1 1 auto; min-width: 0; }
+.duo select { flex: 0 0 42%; }
+
+.err { display: none; color: var(--error); font-size: 14px; margin: 8px 0 0; }
+.err.show { display: block; }
+
+.consent {
+  border: 1px solid var(--border); border-radius: 12px; background: var(--surface);
+  padding: 18px 20px; margin: 0 0 20px; box-shadow: var(--shadow);
+}
+.consent label.opt { align-items: flex-start; background: transparent; border: 0; padding: 0; min-height: 0; }
+.consent .err { margin-left: 0; }
+
+.actions { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
+button.primary {
+  font: inherit; font-weight: 600; font-size: 16px;
+  min-height: 52px; padding: 13px 22px; border: 0; border-radius: 10px;
+  background: var(--accent); color: #fff; cursor: pointer;
+}
+@media (prefers-color-scheme: dark) { button.primary { color: #10161b; } }
+button.primary[disabled] { opacity: .6; cursor: progress; }
+button.secondary {
+  font: inherit; font-size: 15px; min-height: 46px; padding: 11px 18px;
+  border: 1px solid var(--border-strong); border-radius: 9px;
+  background: var(--surface); color: var(--text); cursor: pointer;
+}
+.spinner {
+  display: none; width: 15px; height: 15px; margin-right: 9px;
+  border: 2px solid currentColor; border-right-color: transparent;
+  border-radius: 50%; vertical-align: -2px; animation: spin .7s linear infinite;
+}
+button[data-busy="true"] .spinner { display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation: none; } .progress-fill { transition: none; } }
+
+.done { text-align: left; padding: 40px 0 20px; }
+.done .check {
+  width: 44px; height: 44px; border-radius: 50%; background: var(--accent-soft);
+  color: var(--ok); display: flex; align-items: center; justify-content: center;
+  font-size: 24px; margin-bottom: 18px;
+}
+.done h2 { font-size: 22px; margin: 0 0 10px; }
+.done p { color: var(--muted); margin: 0 0 10px; }
+
+.rescue { border: 1px solid var(--error); background: var(--error-soft); border-radius: 12px; padding: 18px 20px; margin: 0 0 20px; }
+.rescue h3 { margin: 0 0 8px; font-size: 16px; color: var(--error); }
+.rescue p { margin: 0 0 14px; font-size: 15px; }
+.rescue .row { display: flex; flex-wrap: wrap; gap: 10px; }
+.rescue a.secondary { text-decoration: none; display: inline-flex; align-items: center; }
+
+.trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+footer.page { color: var(--muted); font-size: 13px; padding: 8px 0 0; border-top: 1px solid var(--border); margin-top: 26px; }
+[hidden] { display: none !important; }
+
+@media (max-width: 480px) {
+  h1 { font-size: 23px; }
+  .wrap { padding: 0 15px 56px; }
+  fieldset.block { padding: 16px 15px; border-radius: 10px; }
+  .duo { flex-direction: column; }
+  .duo select { flex: 1 1 auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-rail"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="wrap">
+
+  <div class="langbar">
+    <div class="group" role="group" id="langGroup">
+      <button type="button" data-lang="es" aria-pressed="true">Español</button>
+      <button type="button" data-lang="en" aria-pressed="false">English</button>
+    </div>
+  </div>
+
+  <header class="page">
+    <h1 id="hTitle"></h1>
+    <p class="lede" id="hLede"></p>
+    <div class="meta-row">
+      <span class="pill" id="hTime"></span>
+      <span class="pill" id="hAnon"></span>
+    </div>
+  </header>
+
+  <div class="notice error" id="downNotice" hidden>
+    <h3 id="downTitle"></h3>
+    <p id="downBody"></p>
+  </div>
+
+  <main id="main">
+    <form id="surveyForm" novalidate autocomplete="on">
+      <div id="blocks"></div>
+
+      <div class="consent">
+        <label class="opt" id="consentLabel">
+          <input type="checkbox" id="consent">
+          <span id="consentText"></span>
+        </label>
+        <p class="err" id="consentErr"></p>
+      </div>
+
+      <div class="trap" aria-hidden="true">
+        <label>Website<input type="text" id="trap" name="website" tabindex="-1" autocomplete="off"></label>
+      </div>
+
+      <p class="err" id="formErr"></p>
+
+      <div class="actions">
+        <button type="submit" class="primary" id="submitBtn"><span class="spinner"></span><span id="submitLabel"></span></button>
+      </div>
+    </form>
+
+    <section class="rescue" id="rescue" hidden>
+      <h3 id="rescueTitle"></h3>
+      <p id="rescueBody"></p>
+      <div class="row">
+        <button type="button" class="secondary" id="retryBtn"></button>
+        <button type="button" class="secondary" id="downloadBtn"></button>
+        <a class="secondary" id="mailBtn" href="#"></a>
+      </div>
+    </section>
+
+    <section class="done" id="done" hidden>
+      <div class="check" aria-hidden="true">&#10003;</div>
+      <h2 id="doneTitle"></h2>
+      <p id="doneBody"></p>
+      <p id="doneContact"></p>
+    </section>
+  </main>
+
+  <footer class="page"><span id="footText"></span></footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ------------------------------------------------------------------ *
+   * CONFIGURACIÓN. Lo único que hay que tocar para poner esto en marcha.
+   * ------------------------------------------------------------------ */
+  var CONFIG = {
+    // URL /exec del despliegue de Google Apps Script. Ver README.
+    endpoint: "",
+    // Identificador que el script valida antes de escribir la fila.
+    formId: "bim-audit-survey-v1",
+    // Correo de rescate, ensamblado en ejecución para no dejarlo plano en el repositorio.
+    mailUser: "lmateolopezr",
+    mailHost: "gmail.com"
+  };
+
+  var CONTACT = CONFIG.mailUser + String.fromCharCode(64) + CONFIG.mailHost;
+
+  /* ------------------------------------------------------------------ *
+   * ESQUEMA. Cada opción lleva un identificador estable que es lo que se
+   * guarda; las etiquetas visibles solo cambian el idioma.
+   * ------------------------------------------------------------------ */
+  var SCHEMA = [
+    {
+      id: "identificacion",
+      title: { es: "Identificación", en: "Identification" },
+      fields: [
+        { id: "nombre", type: "text", required: true, autocomplete: "name",
+          q: { es: "Nombre completo", en: "Full name" } },
+        { id: "correo", type: "email", required: true, autocomplete: "email",
+          q: { es: "Correo electrónico", en: "Email address" },
+          hint: { es: "Solo se usa por si necesito hacerte una repregunta.", en: "Only used in case I need to follow up with one question." } },
+        { id: "puesto", type: "text", required: true, autocomplete: "organization-title",
+          q: { es: "Puesto de trabajo", en: "Job title" } },
+        { id: "empresa", type: "text", required: true, autocomplete: "organization",
+          q: { es: "Empresa", en: "Company" } },
+        { id: "pais", type: "text", required: false, autocomplete: "country-name",
+          q: { es: "País", en: "Country" } }
+      ]
+    },
+    {
+      id: "contexto",
+      title: { es: "Contexto de trabajo", en: "Work context" },
+      fields: [
+        { id: "revit_versiones", type: "multi", required: true,
+          q: { es: "¿Qué versiones de Revit usas?", en: "Which Revit versions do you use?" },
+          hint: { es: "Marca todas las que apliquen.", en: "Select all that apply." },
+          options: [
+            { id: "2022_o_anterior", es: "2022 o anterior", en: "2022 or earlier" },
+            { id: "2023", es: "2023", en: "2023" },
+            { id: "2024", es: "2024", en: "2024" },
+            { id: "2025", es: "2025", en: "2025" },
+            { id: "2026", es: "2026", en: "2026" },
+            { id: "2027", es: "2027", en: "2027" }
+          ] },
+        { id: "herramientas_actuales", type: "multi", required: true,
+          q: { es: "¿Qué usas hoy para auditar tus modelos?", en: "What do you use today to audit your models?" },
+          hint: { es: "Marca todas las que apliquen.", en: "Select all that apply." },
+          options: [
+            { id: "revision_manual", es: "Revisión manual, vista por vista", en: "Manual review, view by view" },
+            { id: "dynamo", es: "Dynamo", en: "Dynamo" },
+            { id: "pyrevit", es: "pyRevit", en: "pyRevit" },
+            { id: "addins_comerciales", es: "Add-ins comerciales (Ideate, Diroots u otros)", en: "Commercial add-ins (Ideate, Diroots or others)" },
+            { id: "navisworks", es: "Navisworks", en: "Navisworks" },
+            { id: "solibri", es: "Solibri", en: "Solibri" },
+            { id: "nada_sistematico", es: "Nada sistemático", en: "Nothing systematic" }
+          ] }
+      ]
+    },
+    {
+      id: "revision_actual",
+      title: { es: "La revisión actual", en: "Your current review" },
+      fields: [
+        { id: "que_revisas", type: "textarea", required: true,
+          q: { es: "Antes de una reunión de coordinación o una entrega, ¿qué revisas en el modelo?", en: "Before a coordination meeting or a delivery, what do you check in the model?" },
+          hint: { es: "Descríbelo como lo haces hoy, con tus palabras.", en: "Describe it the way you actually do it today, in your own words." } },
+        { id: "tiempo_revision", type: "duration", required: true,
+          q: { es: "¿Cuánto tiempo te toma esa revisión?", en: "How long does that review take you?" },
+          units: [
+            { id: "minutos", es: "minutos", en: "minutes" },
+            { id: "horas", es: "horas", en: "hours" },
+            { id: "dias", es: "días", en: "days" }
+          ] },
+        { id: "frecuencia", type: "single", required: true,
+          q: { es: "¿Cada cuánto la repites?", en: "How often do you repeat it?" },
+          options: [
+            { id: "varias_por_semana", es: "Varias veces por semana", en: "Several times a week" },
+            { id: "semanal", es: "Semanal", en: "Weekly" },
+            { id: "quincenal", es: "Quincenal", en: "Every two weeks" },
+            { id: "mensual", es: "Mensual", en: "Monthly" },
+            { id: "solo_entregas", es: "Solo antes de entregas", en: "Only before deliveries" }
+          ] },
+        { id: "reglas_escritas", type: "single", required: true,
+          q: { es: "¿Las reglas de revisión están escritas?", en: "Are the review rules written down?" },
+          options: [
+            { id: "si_bep_estandar", es: "Sí, en el BEP o en un estándar interno", en: "Yes, in the BEP or an internal standard" },
+            { id: "parcialmente", es: "Parcialmente", en: "Partially" },
+            { id: "no_de_memoria", es: "No, las llevo de memoria", en: "No, I keep them in my head" }
+          ] },
+        { id: "reglas_cambian", type: "single", required: true,
+          q: { es: "¿Cambian de un proyecto a otro?", en: "Do they change from project to project?" },
+          options: [
+            { id: "siempre", es: "Siempre", en: "Always" },
+            { id: "a_veces", es: "A veces", en: "Sometimes" },
+            { id: "casi_nunca", es: "Casi nunca", en: "Almost never" }
+          ] },
+        { id: "que_se_escapa", type: "textarea", required: true,
+          q: { es: "¿Qué se te suele escapar y aparece después, ya en la reunión o después de la entrega?", en: "What usually slips through and shows up later, in the meeting or after delivery?" } }
+      ]
+    },
+    {
+      id: "herramienta",
+      title: { es: "La herramienta", en: "The tool" },
+      fields: [
+        { id: "capacidades_deseadas", type: "limit", limit: 4, required: true, shuffle: true,
+          q: { es: "Si Revit tuviera un botón de IA al que puedes preguntarle en lenguaje natural, ¿qué te gustaría que resolviera?", en: "If Revit had an AI button you could ask in plain language, what would you want it to solve?" },
+          hint: { es: "Elige hasta 4.", en: "Choose up to 4." },
+          otherId: "otra",
+          other: { es: "Otra", en: "Other" },
+          otherPlaceholder: { es: "¿Cuál?", en: "Which one?" },
+          options: [
+            { id: "warnings", es: "Agrupar y clasificar los warnings del modelo por tipo y gravedad", en: "Group and classify the model's warnings by type and severity" },
+            { id: "parametros_vacios", es: "Detectar parámetros obligatorios vacíos o mal llenados", en: "Detect required parameters that are empty or filled in wrong" },
+            { id: "familias", es: "Auditar familias: no utilizadas, duplicadas, cargadas de más", en: "Audit families: unused, duplicated, over-loaded" },
+            { id: "nombrado", es: "Verificar que los nombres de tipos, familias y vistas cumplan la convención del proyecto", en: "Check that type, family and view names follow the project naming convention" },
+            { id: "metrados", es: "Sacar metrados y cantidades por categoría, fase o nivel", en: "Pull quantities by category, phase or level" },
+            { id: "parametros_elemento", es: "Consultar los parámetros de un elemento o de una selección", en: "Query the parameters of one element or of a selection" },
+            { id: "busqueda", es: "Buscar elementos por criterios combinados: categoría, nivel, tipo, valor de parámetro", en: "Find elements by combined criteria: category, level, type, parameter value" },
+            { id: "planos_vistas", es: "Listar planos y vistas, e identificar vistas no colocadas en ningún plano", en: "List sheets and views, and spot views not placed on any sheet" },
+            { id: "vinculos_coordenadas", es: "Revisar el estado de los vínculos y las coordenadas: origen, punto base, IFC y RVT enlazados", en: "Check the state of links and coordinates: origin, base point, linked IFC and RVT" },
+            { id: "interferencias", es: "Detectar interferencias entre disciplinas", en: "Detect clashes between disciplines" },
+            { id: "radiografia", es: "Dar una radiografía general del modelo: qué hay, cuánto y en qué estado", en: "Give an overall X-ray of the model: what is there, how much, in what state" },
+            { id: "info_proyecto", es: "Consultar la información general del proyecto: unidades, fases, ubicación", en: "Query general project information: units, phases, location" },
+            { id: "exportar", es: "Exportar el resultado de la auditoría a Excel o PDF", en: "Export the audit result to Excel or PDF" }
+          ] },
+        { id: "formato_resultado", type: "multi", required: true,
+          q: { es: "¿Cómo querrías recibir el resultado?", en: "How would you want to receive the result?" },
+          hint: { es: "Marca todas las que apliquen.", en: "Select all that apply." },
+          options: [
+            { id: "excel_csv", es: "Reporte en Excel o CSV", en: "Excel or CSV report" },
+            { id: "pdf", es: "PDF para compartir", en: "PDF to share" },
+            { id: "chat_en_revit", es: "Chat dentro de Revit", en: "Chat inside Revit" },
+            { id: "lista_seleccionable", es: "Lista que al hacer clic seleccione el elemento en el modelo", en: "A list where clicking an item selects the element in the model" }
+          ] },
+        { id: "permiso_modificar", type: "single", required: true,
+          q: { es: "Si esa IA pudiera además modificar el modelo, ¿la dejarías?", en: "If that AI could also modify the model, would you let it?" },
+          options: [
+            { id: "solo_lectura", es: "No, solo que lea y reporte", en: "No, read and report only" },
+            { id: "si_confirmando", es: "Sí, pero confirmando cada cambio", en: "Yes, but confirming every change" },
+            { id: "si_por_lotes", es: "Sí, en lotes que yo revise después", en: "Yes, in batches I review afterwards" },
+            { id: "si_sin_supervision", es: "Sí, sin supervisión", en: "Yes, without supervision" }
+          ] }
+      ]
+    },
+    {
+      id: "barreras",
+      title: { es: "Barreras", en: "Barriers" },
+      fields: [
+        { id: "preocupaciones", type: "multi", required: true,
+          q: { es: "¿Qué te preocuparía de conectar una IA a tus modelos?", en: "What would worry you about connecting an AI to your models?" },
+          hint: { es: "Marca todas las que apliquen.", en: "Select all that apply." },
+          options: [
+            { id: "confidencialidad", es: "Confidencialidad del modelo", en: "Model confidentiality" },
+            { id: "error_no_detectado", es: "Que se equivoque y no me dé cuenta", en: "That it gets something wrong and I don't notice" },
+            { id: "costo", es: "Costo", en: "Cost" },
+            { id: "modificacion_involuntaria", es: "Que modifique algo sin querer", en: "That it changes something by accident" },
+            { id: "politicas_empresa", es: "Políticas de mi empresa", en: "My company's policies" },
+            { id: "ninguna", es: "Ninguna en particular", en: "None in particular" }
+          ] },
+        { id: "instalacion", type: "single", required: true,
+          q: { es: "¿Podrías instalar una herramienta así en tu equipo de trabajo?", en: "Could you install a tool like this on your work machine?" },
+          options: [
+            { id: "si_sin_permiso", es: "Sí, sin pedir permiso", en: "Yes, without asking permission" },
+            { id: "aprobacion_ti", es: "Necesito aprobación de TI", en: "I need IT approval" },
+            { id: "ti_bloquearia", es: "TI lo bloquearía", en: "IT would block it" },
+            { id: "no_se", es: "No sé", en: "I don't know" }
+          ] }
+      ]
+    },
+    {
+      id: "opcionales",
+      title: { es: "Opcionales", en: "Optional" },
+      note: { es: "Este bloque entero es opcional. Puedes enviar sin responderlo.", en: "This whole block is optional. You can submit without answering it." },
+      fields: [
+        { id: "tiempo_liberado", type: "textarea", required: false,
+          q: { es: "Si esa revisión se resolviera en minutos, ¿en qué usarías el tiempo liberado?", en: "If that review took minutes instead, what would you do with the time freed up?" } },
+        { id: "experiencia_ia", type: "textarea", required: false,
+          q: { es: "¿Has probado alguna herramienta de IA sobre tus modelos? ¿Qué pasó?", en: "Have you tried any AI tool on your models? What happened?" } }
+      ]
+    }
+  ];
+
+  /* ------------------------------------------------------------------ *
+   * TEXTOS SUELTOS
+   * ------------------------------------------------------------------ */
+  var T = {
+    docTitle:  { es: "Auditoría BIM: instrumento de investigación", en: "BIM audit: research instrument" },
+    title:     { es: "Auditoría BIM: instrumento de investigación", en: "BIM audit: research instrument" },
+    lede:      { es: "Estoy estudiando cómo los coordinadores BIM revisan sus modelos de Revit antes de una reunión de coordinación o de una entrega. Tus respuestas sustentan un trabajo académico y el diseño de una herramienta de auditoría.",
+                 en: "I am studying how BIM coordinators review their Revit models before a coordination meeting or a delivery. Your answers support an academic paper and the design of an audit tool." },
+    time:      { es: "Unos 10 minutos", en: "About 10 minutes" },
+    anon:      { es: "Se cita de forma anónima", en: "Quoted anonymously" },
+    optional:  { es: "opcional", en: "optional" },
+    consent:   { es: "Acepto que mis respuestas se usen en un trabajo académico del Diplomado AECODE. Entiendo que mis datos personales no se publicarán y que las respuestas se citarán de forma anónima, indicando solo el rol y el tipo de empresa. Mi correo se usa únicamente para una posible repregunta.",
+                 en: "I agree that my answers may be used in an academic paper for the AECODE diploma programme. I understand that my personal data will not be published and that answers will be quoted anonymously, indicating only role and company type. My email is used only for a possible follow-up question." },
+    submit:    { es: "Enviar respuestas", en: "Submit answers" },
+    sending:   { es: "Enviando…", en: "Sending…" },
+    counter:   { es: "{n} de {max} seleccionadas", en: "{n} of {max} selected" },
+    durPlaceholder: { es: "Cantidad", en: "Amount" },
+    errRequired: { es: "Esta pregunta es obligatoria.", en: "This question is required." },
+    errPick:     { es: "Elige al menos una opción.", en: "Pick at least one option." },
+    errEmail:    { es: "Escribe un correo con formato válido, por ejemplo nombre@empresa.com.", en: "Enter a valid email address, for example name@company.com." },
+    errNumber:   { es: "Escribe un número mayor que cero.", en: "Enter a number greater than zero." },
+    errUnit:     { es: "Elige la unidad de tiempo.", en: "Choose the time unit." },
+    errOther:    { es: "Describe brevemente qué otra cosa te gustaría que resolviera.", en: "Briefly describe what else you would want it to solve." },
+    errConsent:  { es: "Necesito tu consentimiento para poder usar la respuesta.", en: "I need your consent before I can use your answer." },
+    errForm:     { es: "Faltan respuestas. Revisa los campos marcados en rojo.", en: "Some answers are missing. Check the fields marked in red." },
+    downTitle:   { es: "El formulario no está disponible ahora mismo", en: "The form is not available right now" },
+    downBody:    { es: "No consigo contactar con el servicio que guarda las respuestas, así que he bloqueado el formulario para que no pierdas lo que escribas. Vuelve a intentarlo en un rato o escríbeme a " + CONTACT + " y te lo paso por otro medio.",
+                   en: "I cannot reach the service that stores the answers, so the form is locked to make sure you do not lose what you write. Try again later or email me at " + CONTACT + " and I will send it another way." },
+    rescueTitle: { es: "No se pudo registrar tu respuesta", en: "Your answer could not be recorded" },
+    rescueBody:  { es: "Tu respuesta sigue completa en esta página, no se ha perdido. Vuelve a intentarlo, o descárgala y mándamela por correo y yo la registro.",
+                   en: "Your answer is still here in full, nothing was lost. Try again, or download it and email it to me and I will record it." },
+    retry:       { es: "Reintentar el envío", en: "Retry submission" },
+    download:    { es: "Descargar mi respuesta", en: "Download my answer" },
+    mail:        { es: "Enviármela por correo", en: "Email it to me" },
+    doneTitle:   { es: "Respuesta registrada. Gracias.", en: "Answer recorded. Thank you." },
+    doneBody:    { es: "Tu respuesta quedó guardada y ya cuenta para el estudio. No hace falta que hagas nada más.",
+                   en: "Your answer has been saved and already counts towards the study. There is nothing else you need to do." },
+    doneContact: { es: "Si quieres corregir algo, escríbeme a " + CONTACT + ".", en: "If you want to correct anything, email me at " + CONTACT + "." },
+    foot:        { es: "Instrumento de investigación del Diplomado AECODE, IA en Ingeniería y Construcción. Los datos personales no se publican.",
+                   en: "Research instrument for the AECODE diploma programme, AI in Engineering and Construction. Personal data is not published." },
+    mailSubject: { es: "Respuesta a la encuesta de auditoría BIM", en: "BIM audit survey response" }
+  };
+
+  /* ------------------------------------------------------------------ *
+   * IDIOMA
+   * ------------------------------------------------------------------ */
+  var lang = "es";
+  var nodes = [];   // {el, pair, attr}
+
+  function bind(el, pair, attr) {
+    nodes.push({ el: el, pair: pair, attr: attr || "text" });
+    return el;
+  }
+  function applyLang() {
+    document.documentElement.lang = lang;
+    document.title = T.docTitle[lang];
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      var v = typeof n.pair === "function" ? n.pair() : n.pair[lang];
+      if (n.attr === "text") n.el.textContent = v;
+      else n.el.setAttribute(n.attr, v);
+    }
+  }
+
+  /* ------------------------------------------------------------------ *
+   * ORDEN ALEATORIO, FIJADO UNA VEZ POR SESIÓN
+   * ------------------------------------------------------------------ */
+  function shuffled(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  var shuffleOrder = {};   // fieldId -> [optionId,...] tal como se mostró
+
+  /* ------------------------------------------------------------------ *
+   * CONSTRUCCIÓN DEL FORMULARIO
+   * ------------------------------------------------------------------ */
+  var ctrl = {};   // fieldId -> descriptor de control
+  var els = {};
+
+  function el(tag, cls, parent) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+
+  function buildOption(field, opt, wrap, inputType, groupName) {
+    var label = el("label", "opt", wrap);
+    var input = el("input", null, label);
+    input.type = inputType;
+    input.value = opt.id;
+    if (groupName) input.name = groupName;
+    var span = el("span", null, label);
+    bind(span, opt);
+    label.addEventListener("click", function () { setTimeout(sync, 0); });
+    return { label: label, input: input };
+  }
+
+  function buildField(field, host) {
+    var wrap = el("div", "field", host);
+    wrap.id = "f_" + field.id;
+
+    var qId = "q_" + field.id;
+    var q = el("span", "q", wrap);
+    q.id = qId;
+    // El texto va en su propio span: si se enlazara el contenedor, applyLang
+    // reescribiría su textContent y se llevaría por delante la marca de opcional.
+    bind(el("span", null, q), field.q);
+    if (!field.required) {
+      var flag = el("span", "opt-flag", q);
+      bind(flag, function () { return " (" + T.optional[lang] + ")"; });
+    }
+    if (field.hint) bind(el("span", "hint", wrap), field.hint);
+
+    var err = el("p", "err", wrap);
+    var d = { field: field, wrap: wrap, err: err };
+
+    if (field.type === "text" || field.type === "email") {
+      var input = el("input", null, wrap);
+      input.type = field.type === "email" ? "email" : "text";
+      input.id = "i_" + field.id;
+      input.setAttribute("aria-labelledby", qId);
+      if (field.autocomplete) input.autocomplete = field.autocomplete;
+      input.addEventListener("input", sync);
+      wrap.insertBefore(input, err);
+      d.input = input;
+
+    } else if (field.type === "textarea") {
+      var ta = el("textarea", null, wrap);
+      ta.id = "i_" + field.id;
+      ta.rows = 4;
+      ta.setAttribute("aria-labelledby", qId);
+      ta.addEventListener("input", sync);
+      wrap.insertBefore(ta, err);
+      d.input = ta;
+
+    } else if (field.type === "duration") {
+      var duo = el("div", "duo", wrap);
+      wrap.insertBefore(duo, err);
+      var num = el("input", null, duo);
+      num.type = "number";
+      num.min = "0";
+      num.step = "any";
+      num.inputMode = "decimal";
+      num.id = "i_" + field.id;
+      num.setAttribute("aria-labelledby", qId);
+      bind(num, T.durPlaceholder, "placeholder");
+      num.addEventListener("input", sync);
+      var sel = el("select", null, duo);
+      sel.id = "u_" + field.id;
+      sel.setAttribute("aria-labelledby", qId);
+      for (var u = 0; u < field.units.length; u++) {
+        var o = el("option", null, sel);
+        o.value = field.units[u].id;
+        bind(o, field.units[u]);
+      }
+      sel.addEventListener("change", sync);
+      d.input = num; d.unit = sel;
+
+    } else if (field.type === "single" || field.type === "multi" || field.type === "limit") {
+      var group = el("div", "opts", wrap);
+      group.setAttribute("role", field.type === "single" ? "radiogroup" : "group");
+      group.setAttribute("aria-labelledby", qId);
+      wrap.insertBefore(group, err);
+
+      var list = field.options;
+      if (field.shuffle) list = shuffled(field.options);
+
+      var items = [];
+      var order = [];
+      for (var i = 0; i < list.length; i++) {
+        items.push(buildOption(field, list[i], group, field.type === "single" ? "radio" : "checkbox", field.id));
+        order.push(list[i].id);
+      }
+      if (field.otherId) {
+        var other = { id: field.otherId, es: field.other.es, en: field.other.en };
+        var oi = buildOption(field, other, group, "checkbox", field.id);
+        items.push(oi);
+        order.push(field.otherId);
+        var ow = el("div", "otra-wrap", group);
+        var otext = el("input", null, ow);
+        otext.type = "text";
+        otext.id = "other_" + field.id;
+        otext.disabled = true;
+        bind(otext, field.otherPlaceholder, "placeholder");
+        bind(otext, field.otherPlaceholder, "aria-label");
+        otext.addEventListener("input", sync);
+        d.otherInput = otext;
+        d.otherBox = oi.input;
+      }
+      shuffleOrder[field.id] = order;
+      d.group = group;
+      d.items = items;
+
+      if (field.type === "limit") {
+        var counter = el("p", "counter", wrap);
+        wrap.insertBefore(counter, err);
+        d.counter = counter;
+      }
+    }
+
+    ctrl[field.id] = d;
+    return d;
+  }
+
+  function buildForm() {
+    var host = document.getElementById("blocks");
+    for (var b = 0; b < SCHEMA.length; b++) {
+      var block = SCHEMA[b];
+      var fs = el("fieldset", "block", host);
+      var lg = el("legend", null, fs);
+      var head = el("div", "block-head", lg);
+      var num = el("span", "block-num", head);
+      num.textContent = (b + 1) + " / " + SCHEMA.length;
+      bind(el("span", "block-title", head), block.title);
+      if (block.note) bind(el("p", "block-note", lg), block.note);
+      for (var f = 0; f < block.fields.length; f++) buildField(block.fields[f], fs);
+    }
+  }
+
+  /* ------------------------------------------------------------------ *
+   * SINCRONIZACIÓN: estados visuales, tope de 4, progreso
+   * ------------------------------------------------------------------ */
+  function checkedIds(d) {
+    var out = [];
+    for (var i = 0; i < d.items.length; i++) if (d.items[i].input.checked) out.push(d.items[i].input.value);
+    return out;
+  }
+
+  function sync() {
+    var doneCount = 0, reqCount = 0;
+
+    for (var id in ctrl) {
+      var d = ctrl[id], field = d.field;
+
+      if (d.items) {
+        for (var i = 0; i < d.items.length; i++) {
+          d.items[i].label.classList.toggle("checked", d.items[i].input.checked);
+        }
+      }
+
+      if (field.type === "limit") {
+        var n = checkedIds(d).length;
+        var full = n >= field.limit;
+        for (var k = 0; k < d.items.length; k++) {
+          var it = d.items[k];
+          var lock = full && !it.input.checked;
+          it.input.disabled = lock || formLocked;
+          it.label.classList.toggle("locked", lock);
+        }
+        d.counter.textContent = T.counter[lang].replace("{n}", n).replace("{max}", field.limit);
+        d.counter.classList.toggle("full", full);
+      }
+
+      if (d.otherInput) {
+        var on = d.otherBox.checked;
+        d.otherInput.disabled = !on || formLocked;
+        if (!on && d.otherInput.value) d.otherInput.value = "";
+      }
+
+      if (field.required) {
+        reqCount++;
+        if (isAnswered(d)) doneCount++;
+      }
+    }
+
+    reqCount++;
+    if (els.consent.checked) doneCount++;
+
+    var pct = reqCount ? Math.round((doneCount / reqCount) * 100) : 0;
+    els.progress.style.width = pct + "%";
+
+    if (validatedOnce) validate(false);
+  }
+
+  function isAnswered(d) {
+    var f = d.field;
+    if (f.type === "text" || f.type === "email" || f.type === "textarea") return d.input.value.trim() !== "";
+    if (f.type === "duration") return d.input.value.trim() !== "" && parseFloat(d.input.value) > 0;
+    if (d.items) {
+      var ids = checkedIds(d);
+      if (!ids.length) return false;
+      if (d.otherBox && d.otherBox.checked && !d.otherInput.value.trim()) return false;
+      return true;
+    }
+    return false;
+  }
+
+  /* ------------------------------------------------------------------ *
+   * VALIDACIÓN
+   * ------------------------------------------------------------------ */
+  var validatedOnce = false;
+  var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  function setErr(d, msgKey) {
+    var target = d.input || d.group;
+    if (msgKey) {
+      d.err.textContent = T[msgKey][lang];
+      d.err.classList.add("show");
+      if (d.input) d.input.setAttribute("aria-invalid", "true");
+      if (d.group) d.group.setAttribute("aria-invalid", "true");
+      if (d.unit) d.unit.removeAttribute("aria-invalid");
+      return target;
+    }
+    d.err.textContent = "";
+    d.err.classList.remove("show");
+    if (d.input) d.input.removeAttribute("aria-invalid");
+    if (d.group) d.group.removeAttribute("aria-invalid");
+    if (d.unit) d.unit.removeAttribute("aria-invalid");
+    return null;
+  }
+
+  function validate(focusFirst) {
+    validatedOnce = true;
+    var first = null;
+
+    for (var b = 0; b < SCHEMA.length; b++) {
+      for (var f = 0; f < SCHEMA[b].fields.length; f++) {
+        var field = SCHEMA[b].fields[f];
+        var d = ctrl[field.id];
+        var bad = null;
+
+        if (field.type === "email") {
+          var v = d.input.value.trim();
+          if (!v) { if (field.required) bad = "errRequired"; }
+          else if (!EMAIL.test(v)) bad = "errEmail";
+        } else if (field.type === "text" || field.type === "textarea") {
+          if (field.required && !d.input.value.trim()) bad = "errRequired";
+        } else if (field.type === "duration") {
+          var raw = d.input.value.trim();
+          if (!raw) { if (field.required) bad = "errRequired"; }
+          else if (!(parseFloat(raw) > 0)) bad = "errNumber";
+        } else if (d.items) {
+          var ids = checkedIds(d);
+          if (!ids.length) { if (field.required) bad = "errPick"; }
+          else if (d.otherBox && d.otherBox.checked && !d.otherInput.value.trim()) bad = "errOther";
+        }
+
+        var target = setErr(d, bad);
+        if (target && !first) first = (bad === "errOther" && d.otherInput) ? d.otherInput : target;
+      }
+    }
+
+    if (!els.consent.checked) {
+      els.consentErr.textContent = T.errConsent[lang];
+      els.consentErr.classList.add("show");
+      els.consent.setAttribute("aria-invalid", "true");
+      if (!first) first = els.consent;
+    } else {
+      els.consentErr.textContent = "";
+      els.consentErr.classList.remove("show");
+      els.consent.removeAttribute("aria-invalid");
+    }
+
+    if (first) {
+      els.formErr.textContent = T.errForm[lang];
+      els.formErr.classList.add("show");
+      if (focusFirst) {
+        if (first.focus) first.focus({ preventScroll: true });
+        var box = first.getBoundingClientRect();
+        window.scrollTo({ top: window.scrollY + box.top - 100, behavior: "smooth" });
+      }
+      return false;
+    }
+    els.formErr.textContent = "";
+    els.formErr.classList.remove("show");
+    return true;
+  }
+
+  /* ------------------------------------------------------------------ *
+   * PAYLOAD
+   * ------------------------------------------------------------------ */
+  function buildPayload() {
+    var r = {};
+    for (var b = 0; b < SCHEMA.length; b++) {
+      for (var f = 0; f < SCHEMA[b].fields.length; f++) {
+        var field = SCHEMA[b].fields[f];
+        var d = ctrl[field.id];
+        if (field.type === "duration") {
+          var raw = d.input.value.trim();
+          r[field.id] = raw === "" ? null : { valor: parseFloat(raw), unidad: d.unit.value };
+        } else if (d.items) {
+          var ids = checkedIds(d);
+          // Una sola opción viaja como texto; las múltiples, como arreglo de identificadores.
+          r[field.id] = field.type === "single" ? (ids[0] || "") : ids;
+          if (d.otherBox) r[field.id + "_otra_texto"] = d.otherBox.checked ? d.otherInput.value.trim() : "";
+        } else {
+          r[field.id] = d.input.value.trim();
+        }
+      }
+    }
+    return {
+      form_id: CONFIG.formId,
+      enviado_en: new Date().toISOString(),
+      idioma: lang,
+      orden_capacidades: shuffleOrder.capacidades_deseadas || [],
+      consentimiento: !!els.consent.checked,
+      trampa: els.trap.value,
+      respuestas: r
+    };
+  }
+
+  /* ------------------------------------------------------------------ *
+   * DISPONIBILIDAD DEL ALMACENAMIENTO
+   * ------------------------------------------------------------------ */
+  var formLocked = false;
+
+  function lockForm(on) {
+    formLocked = on;
+    els.down.hidden = !on;
+    els.form.hidden = on;
+    els.submit.disabled = on;
+  }
+
+  function probe() {
+    if (!CONFIG.endpoint || typeof window.fetch !== "function") { lockForm(true); return; }
+    var timer = setTimeout(function () { lockForm(true); }, 12000);
+    try {
+      fetch(CONFIG.endpoint + (CONFIG.endpoint.indexOf("?") === -1 ? "?" : "&") + "ping=1", {
+        method: "GET",
+        redirect: "follow"
+      }).then(function (res) {
+        clearTimeout(timer);
+        if (!res.ok) throw new Error("bad status");
+        lockForm(false);
+      }).catch(function () {
+        clearTimeout(timer);
+        lockForm(true);
+      });
+    } catch (e) {
+      clearTimeout(timer);
+      lockForm(true);
+    }
+  }
+
+  /* ------------------------------------------------------------------ *
+   * ENVÍO
+   * ------------------------------------------------------------------ */
+  var lastPayload = null;
+  var sending = false;
+
+  function send() {
+    if (sending || formLocked) return;
+    sending = true;
+    els.rescue.hidden = true;
+    els.submit.disabled = true;
+    els.submit.setAttribute("data-busy", "true");
+    els.submitLabel.textContent = T.sending[lang];
+
+    var payload = lastPayload || buildPayload();
+    lastPayload = payload;
+
+    // Devuelve el botón a su estado normal y ofrece el rescate. Se llama tanto
+    // desde el catch de la promesa como desde el try síncrono: si fetch no
+    // existe o revienta al invocarse, el botón no puede quedarse colgado.
+    function failed() {
+      sending = false;
+      els.submit.disabled = false;
+      els.submit.removeAttribute("data-busy");
+      els.submitLabel.textContent = T.submit[lang];
+      showRescue(payload);
+    }
+
+    try {
+      fetch(CONFIG.endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+        redirect: "follow"
+      }).then(function (res) {
+        return res.text().then(function (txt) {
+          var data = null;
+          try { data = JSON.parse(txt); } catch (e) {}
+          if (res.ok && data && data.ok) return true;
+          throw new Error("rejected");
+        });
+      }).then(function () {
+        showDone();
+      }).catch(failed);
+    } catch (e) {
+      failed();
+    }
+  }
+
+  function showDone() {
+    els.form.hidden = true;
+    els.rescue.hidden = true;
+    els.done.hidden = false;
+    els.progress.style.width = "100%";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function showRescue(payload) {
+    els.rescue.hidden = false;
+    var body = JSON.stringify(payload, null, 2);
+    els.mail.href = "mailto:" + CONTACT +
+      "?subject=" + encodeURIComponent(T.mailSubject[lang]) +
+      "&body=" + encodeURIComponent(body.slice(0, 1500));
+    els.rescue.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function downloadPayload() {
+    if (!lastPayload) return;
+    var blob = new Blob([JSON.stringify(lastPayload, null, 2)], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "respuesta-auditoria-bim.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * ARRANQUE
+   * ------------------------------------------------------------------ */
+  function init() {
+    els = {
+      form: document.getElementById("surveyForm"),
+      progress: document.getElementById("progressFill"),
+      consent: document.getElementById("consent"),
+      consentErr: document.getElementById("consentErr"),
+      formErr: document.getElementById("formErr"),
+      submit: document.getElementById("submitBtn"),
+      submitLabel: document.getElementById("submitLabel"),
+      trap: document.getElementById("trap"),
+      down: document.getElementById("downNotice"),
+      rescue: document.getElementById("rescue"),
+      done: document.getElementById("done"),
+      mail: document.getElementById("mailBtn")
+    };
+
+    buildForm();
+
+    bind(document.getElementById("hTitle"), T.title);
+    bind(document.getElementById("hLede"), T.lede);
+    bind(document.getElementById("hTime"), T.time);
+    bind(document.getElementById("hAnon"), T.anon);
+    bind(document.getElementById("consentText"), T.consent);
+    bind(els.submitLabel, T.submit);
+    bind(document.getElementById("downTitle"), T.downTitle);
+    bind(document.getElementById("downBody"), T.downBody);
+    bind(document.getElementById("rescueTitle"), T.rescueTitle);
+    bind(document.getElementById("rescueBody"), T.rescueBody);
+    bind(document.getElementById("retryBtn"), T.retry);
+    bind(document.getElementById("downloadBtn"), T.download);
+    bind(els.mail, T.mail);
+    bind(document.getElementById("doneTitle"), T.doneTitle);
+    bind(document.getElementById("doneBody"), T.doneBody);
+    bind(document.getElementById("doneContact"), T.doneContact);
+    bind(document.getElementById("footText"), T.foot);
+
+    applyLang();
+    sync();
+
+    document.getElementById("langGroup").addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-lang]");
+      if (!b) return;
+      lang = b.getAttribute("data-lang");
+      var all = this.querySelectorAll("button[data-lang]");
+      for (var i = 0; i < all.length; i++) {
+        all[i].setAttribute("aria-pressed", all[i] === b ? "true" : "false");
+      }
+      applyLang();
+      sync();
+    });
+
+    els.consent.addEventListener("change", function () {
+      document.getElementById("consentLabel").classList.toggle("checked", els.consent.checked);
+      sync();
+    });
+
+    els.form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      lastPayload = null;
+      if (!validate(true)) return;
+      send();
+    });
+
+    document.getElementById("retryBtn").addEventListener("click", send);
+    document.getElementById("downloadBtn").addEventListener("click", downloadPayload);
+
+    probe();
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+</body>
+</html>
